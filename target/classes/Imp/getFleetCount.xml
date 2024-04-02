@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+	<flow name="getFleetCountFlow" doc:id="38026760-69ad-451a-8d73-432c9c035756" >
+		<ee:transform doc:name="Prepare Query Params" doc:id="9d6d2e6a-199b-40dc-8d35-bb54e84fdf32" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="queryParams" ><![CDATA[%dw 2.0
+output application/json
+
+---
+{
+	
+	limit: attributes.queryParams.limit default null,
+	finCodes: attributes.queryParams.finCodes default null,   
+	scaId: attributes.queryParams.scaId default null, 
+    orderStatus: attributes.queryParams.orderStatus default null,
+    bevOrderId: attributes.queryParams.bevOrderId default null
+
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Before Request Pro360 System API" doc:id="c64bbb67-2f92-43ba-ab35-fb81ff1847d1" message="Before Request Pro360 System API" />
+		<http:request method="GET" doc:name="Request Pro360 System API" doc:id="71f6e331-1cf8-42b1-90f4-6535808db171" config-ref="HTTP_Request_configuration" path="${pro360.path}">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	limit: vars.queryParams.limit default null,
+	finCodes: vars.queryParams.finCodes default null,   
+	scaId: vars.queryParams.scaId default null, 
+    orderStatus: vars.queryParams.orderStatus default null,
+    bevOrderId: vars.queryParams.bevOrderId default null
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="After Request Pro360 System API" doc:id="7df4ee90-1210-4f0d-a51e-f442a3acbe68" message="After Request Pro360 System API"/>
+		<ee:transform doc:name="Map Payload" doc:id="78dd9384-1d8f-40a7-bfaf-4e3c84a15161" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="createFleetCountFlow" doc:id="e31c5e74-7ad8-4bc7-ad80-36f9b905bf16" name="createFleetCountFlow"/>
+	</flow>
+</mule>

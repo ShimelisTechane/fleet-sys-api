@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="healthCheckFlow" doc:id="d07c2e2e-4052-498c-8650-ca19d5324a7b" >
+		<logger level="INFO" doc:name="getHealthCheck Before Debug log" doc:id="ca76b1a8-58dc-4be6-91f9-aaa4d272e890" message="getHealthCheck Before Debug log"/>
+		<ee:transform doc:name="Fleet System API Health Check" doc:id="dc7d3594-7f1b-479f-bc37-5a4b41d4f391" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  healthCheck: {
+    name: "fleet-sys-api" ++ "-" ++ p('mule.env'),
+    status: "up",
+    transactionId: correlationId default "",
+    timeStamp: now(),
+    metric: [],
+    dependencies: []
+  }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="getHealthCheck After Debug log" doc:id="73199369-5af6-4156-8e76-02e837037218" message="getHealthCheck After Debug log"/>
+	</flow>
+</mule>

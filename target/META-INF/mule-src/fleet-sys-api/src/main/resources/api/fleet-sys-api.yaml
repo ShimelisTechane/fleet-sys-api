@@ -1,0 +1,581 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Fleet Count System API
+paths:
+  /healthcheck:
+    get:
+      summary: Health Check
+      description: 
+        The healthcheck endpoint provides detailed information about the health of the API
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: "API is available"
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/healthCheck"
+              examples:
+                response:
+                  $ref: "#/components/examples/successHealthCheckResponse"
+        '401':
+          description: "Unauthorized error occured"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/unAuthorizedError'
+        '400':
+          description: "Invalid request message"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/badRequest'
+        '404':
+          description: "Requester resource not found"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/resourceNotFound'
+        '405':
+          description: "The target resource does not support the requested method"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/methodNotSupported'
+        '415':
+          description: "The server is refusing to the request because it is not in a format supported by the target resource"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/unsupportedMediaType'
+        '500':
+          description: "The Server was unable to process the request due to an internal error"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/serverError'
+  /fleetCount:
+    get:
+      summary: "Fleet count  from pro360" 
+      description: "based on Fin code, Sca_Id and Order status get fleet count details from pro360"
+      security:
+      - bearerAuth: []
+      parameters:
+        [
+          {
+             "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": string
+            }
+          },
+          {
+             "name": "finCodes",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": string
+            }
+          },
+          {
+             "name": "scaId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": string
+            }
+          },
+          {
+             "name": "orderStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": string
+              }
+            },
+          {
+             "name": "bevOrderId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": string
+            }
+          }
+          
+        ] 
+      responses:
+        '200':
+          description: "fleet count retrieved from pro360 Service"
+          content:
+            application/json:
+              examples:
+                response:
+                  $ref: '#/components/examples/GetFleetCountResponse'    
+        '401':
+          description: "Unauthorized error occured"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/unAuthorizedError'
+        '400':
+          description: "Invalid request message"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/badRequest'
+        '404':
+          description: "Requester resource not found"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/resourceNotFound'
+        '405':
+          description: "The target resource does not support the requested method"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/methodNotSupported'
+        '415':
+          description: "The server is refusing to the request because it is not in a format supported by the target resource"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/unsupportedMediaType'
+        '500':
+          description: "The Server was unable to process the request due to an internal error"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/serverError'          
+    post:
+      description: This end point creatre Fleet Count Data in salesforce
+      security:
+      - bearerAuth: []
+      requestBody:
+        description: "create the Fleet Count Data in SF"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids_software_licenses_in_use:
+                  type: number          
+                  example: 123
+                ids_software_licenses_total:
+                  type: number
+                  example: 123
+                ihw_new:
+                  type: string
+                  example: xxxxx              
+                limited_free_publications_subscription:
+                  type: string
+                  format: date
+                  example: "2024-03-26"
+                number_ihw_locations_new:
+                  type: number
+                  example: 123
+                p_and_a_code:
+                  type: string
+                  example: xxxxxxxx          
+                publications_subscription:
+                  type: string
+                  format: date
+                  example: "2024-03-26"
+                pytd_fad:
+                  type: string
+                  format: currency
+                  example: "$100.00"
+                pytd_retail:
+                  type: string
+                  format: currency
+                  example: "$100.00"
+                pytd_wholesale:
+                  type: string
+                  format: currency
+                  example: "$100.00"             
+                stst_training_subscription:
+                  type: string   
+                  format: date
+                  example: "2024-03-26"
+                x0pyos:
+                  type: number
+                  example: 123
+                x1pyos:
+                  type: number
+                  example: 123          
+                x2pyos:
+                  type: number
+                  example: 123
+                x3pyos:
+                  type: number          
+                  example: 123
+                x4pyos:
+                  type: number
+                  example: 123
+                x5_year_average:
+                  type: number
+                  example: 123              
+                x5_year_total:
+                  type: number   
+                  example: 123
+                ytd_spend:
+                  type: string
+                  format: currency
+                  example: "$100.00"
+                ytd_fad:
+                  type: string
+                  format: currency
+                  example: "$100.00"          
+                ytd_retail:
+                  type: string
+                  format: currency
+                  example: "$100.00"
+                ytd_wholesale:
+                  type: string          
+                  format: currency
+                  example: "$100.00"
+                sca_id:
+                  type: string
+                  example: USA
+                fin_code:
+                  type: string
+                  example: xxxxx              
+                account_name:
+                  type: string   
+                  example: xxxxxxx
+                loyalty_program:
+                  type: string
+                  example: xxxxxxx
+                loyalty_baseline:
+                  type: string
+                  example: xxxxxxxx          
+                loyalty_sales_total:
+                  type: string
+                  example: xxxxxxxx
+                fleet_external_id:
+                  type: string
+                  example: xxxxxxx
+                dba_code:
+                  type: string
+                  example: xxxxxxxx          
+                country_iso3_code:
+                  type: string
+                  example: xxxxxxxx
+      responses:
+        '201':
+          description: "Vehicle Object Data is successfully Sent to SF"
+          content:
+            application/json:
+              examples:
+                response:
+                  $ref: '#/components/examples/FleetPostResponse'
+        '401':
+          description: "Unauthorized error occured"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/unAuthorizedError'
+        '400':
+          description: "Invalid request message"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/badRequest'
+        '404':
+          description: "Requester resource not found"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/resourceNotFound'
+        '405':
+          description: "The target resource does not support the requested method"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/methodNotSupported'
+        '415':
+          description: "The server is refusing to the request because it is not in a format supported by the target resource"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/unsupportedMediaType'
+        '500':
+          description: "The Server was unable to process the request due to an internal error"
+          content:
+            application/json :
+              schema:
+                  $ref: "#/components/schemas/errorSchema"
+              example:
+                responses:
+                  $ref: '#/components/examples/serverError'  
+components:         
+  examples:
+    GetFleetCountResponse:
+      value: 
+        "IDS_Software_Licenses_Total__c": ""
+        "IHW_new__c": ""
+        "Limited_free_Publications_Subscription__c": ""
+        "Number_IHW_Locations__c": ""
+        "Primary_PA_Codes__c": ""
+        "Publications_Subscription__c": ""
+        "PYTD_FAD__c": ""
+        "PYTD_Retail__c": ""
+        "PYTD_Wholesale__c": ""
+        "STST_Training_Subscription__c": ""
+        "X0PYOS__c": ""
+        "X1PYOS__c": ""
+        "X2PYOS__c": ""
+        "X3PYOS__c": ""
+        "X4PYOS__c": ""
+        "X5_Year_Average__c": ""
+        "X5_Year_Total__c": ""
+        "X36new__c": ""
+        "YTD_FAD__c": ""
+        "YTD_Retail__c": ""
+        "YTD_Wholesale__c": ""
+        "FIN_Code__c": ""
+        "Account_Name__c": ""
+        "Loyalty_Program__c": ""
+        "Loyalty_Program_Baseline__c": ""
+        "Loyalty_Program_Sales_Total_Current_Period__c": ""
+        "Fleet_External_ID__c": ""
+        "DBA_Code__c": ""
+        "Country_code__c": ""
+    FleetPostResponse:
+      value:
+        "statusCode": 201
+        "id": "06A8G000002JJGpUAO"
+        "message": "Data created Successfully in Salesforce"
+        "transactionId": "ba131f60-ce59-11ed-b08a-067426c68ef3"
+        "timeStamp": "2023-03-29T17:47:10.162Z"  
+    successHealthCheckResponse:
+      value:
+        healthCheck: 
+          name: fordproTemplate
+          status: up
+          transactionId: dd960082-abbf-47c2-8c65-f18eeb35848b
+          timeStamp: 2022-09-14T15:27:49.274Z
+          metric : []
+          dependencies: []        
+        
+    unAuthorizedError:
+      value: 
+        StatusCode: 401,
+        StatusMessage: Unauthorized, the client_id or client_secret are not valid or the client does not have access
+        transactionId: dd960082-abbf-47c2-8c65-f18eeb35848b,
+        timeStamp: 2022-09-14T15:27:49.274Z
+    badRequest:
+      value: 
+        StatusCode: 400,
+        StatusMessage: Bad request,
+        transactionId: dd960082-abbf-47c2-8c65-f18eeb35848b,
+        timeStamp: 2022-09-14T15:27:49.274Z
+    resourceNotFound:
+      value: 
+        StatusCode: 404,
+        StatusMessage: Requester resource not found,
+        transactionId: dd960082-abbf-47c2-8c65-f18eeb35848b,
+        timeStamp: 2022-09-14T15:27:49.274Z
+    methodNotSupported:
+      value: 
+        StatusCode: 405,
+        StatusMessage: The target resource does not support the requested method,
+        transactionId: dd960082-abbf-47c2-8c65-f18eeb35848b,
+        timeStamp: 2022-09-14T15:27:49.274Z
+    unsupportedMediaType:
+      value: 
+        StatusCode: 415,
+        StatusMessage: The server is refusing to the request because it is not in a format supported by the target resource,
+        transactionId: dd960082-abbf-47c2-8c65-f18eeb35848b,
+        timeStamp: 2022-09-14T15:27:49.274Z
+    serverError:
+      value: 
+        StatusCode: 500,
+        StatusMessage: The Server was unable to process the request due to an internal error,
+        transactionId: dd960082-abbf-47c2-8c65-f18eeb35848b,
+        timeStamp: 2022-09-14T15:27:49.274Z   
+  schemas:
+    healthCheck:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - up
+            - down
+            - unkown
+        transactionId: 
+          type: string
+        timeStamp:
+          type: string
+          format: date-time
+        metric:
+          type: array
+          items: 
+            type: object
+            properties:
+              responseTime:
+                type: integer
+    errorSchema:
+      type: object
+      properties:
+        statusCode: 
+          type: string
+        statusMessage: 
+          type: string
+        transactionId: 
+          type: string
+        timeStamp: 
+         type: string  
+    unAuthorizedError:
+      type: object
+      properties:
+        StatusCode:
+          type: integer
+          example: 401
+        StatusMessage: 
+          type: string
+          example: Unauthorized, the client_id or client_secret are not valid or the client does not have access
+        transactionId:
+          type: string
+          example: dd960082-abbf-47c2-8c65-f18eeb35848b
+        timeStamp: 
+          type: string
+          example:  2022-09-14T15:27:49.274Z
+    badRequest:
+      type: object
+      properties:
+        StatusCode:
+          type: integer
+          example: 400
+        StatusMessage: 
+          type: string
+          example: Unauthorized, the client_id or client_secret are not valid or the client does not have access
+        transactionId:
+          type: string
+          example: dd960082-abbf-47c2-8c65-f18eeb35848b
+        timeStamp: 
+          type: string
+          example:  2022-09-14T15:27:49.274Z
+    resourceNotFound:
+      type: object
+      properties:
+        StatusCode:
+          type: integer
+          example: 404
+        StatusMessage: 
+          type: string
+          example: Requester resource not found
+        transactionId:
+          type: string
+          example: dd960082-abbf-47c2-8c65-f18eeb35848b
+        timeStamp: 
+          type: string
+          example:  2022-09-14T15:27:49.274Z       
+    methodNotSupported:
+      type: object
+      properties:
+        StatusCode:
+          type: integer
+          example: 405
+        StatusMessage: 
+          type: string
+          example: The target resource does not support the requested method
+        transactionId:
+          type: string
+          example: dd960082-abbf-47c2-8c65-f18eeb35848b
+        timeStamp: 
+          type: string
+          example:  2022-09-14T15:27:49.274Z     
+    unsupportedMediaType:
+      type: object
+      properties:
+        StatusCode:
+          type: integer
+          example: 415
+        StatusMessage: 
+          type: string
+          example:  The server is refusing to the request because it is not in a format supported by the target resource,
+        transactionId:
+          type: string
+          example: dd960082-abbf-47c2-8c65-f18eeb35848b
+        timeStamp: 
+          type: string
+          example:  2022-09-14T15:27:49.274Z
+    serverError:
+      type: object
+      properties:
+        StatusCode:
+          type: integer
+          example: 500
+        StatusMessage: 
+          type: string
+          example:  The Server was unable to process the request due to an internal error,
+        transactionId:
+          type: string
+          example: dd960082-abbf-47c2-8c65-f18eeb35848b
+        timeStamp: 
+          type: string
+          example:  2022-09-14T15:27:49.274Z
+  # Security Scheme
+  securitySchemes:
+      bearerAuth:  
+        type: http
+        scheme: bearer
+        bearerFormat: JWT    # we can use this to pass in customer 

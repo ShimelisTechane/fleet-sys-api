@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	   <configuration-properties doc:name="Configuration properties" doc:id="a0366891-1a0a-40d1-abe9-df573ce20273" file="config\uat.yaml" />
+		<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="39dcea09-9124-404b-9c45-98928b7695ec" >
+		<http:request-connection host="${pro360.host}" port="${pro360.port}" />
+	</http:request-config>
+	</mule>

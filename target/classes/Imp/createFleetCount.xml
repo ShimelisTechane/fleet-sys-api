@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="ea457860-1d92-45b4-92c5-9e432914c616" >
+		<salesforce:basic-connection username="shimebet1213@gmail.com" password="Shime@1213#1213" securityToken="j62lRMABuW1ypdWyRNfAiisH" />
+	</salesforce:sfdc-config>
+	<flow name="createFleetCountFlow" doc:id="5aac5ac4-2833-445c-9573-7508eb206587" >
+		<logger level="INFO" doc:name="Before SF Create Call" doc:id="6db8d425-bf7e-4cb5-b074-4211c375693d" message="Before SF Create Call"/>
+		<salesforce:create type="Account_Account__c" doc:name="Create" doc:id="316ead6f-dc02-46a1-83eb-d35521b39d56" config-ref="Salesforce_Config" />
+		<logger level="INFO" doc:name="After SF Create Call" doc:id="72476746-71a6-44d4-a7b4-5a8a1175effd" message="After SF Create Call"/>
+		<choice doc:name="Choice" doc:id="eef4128c-7b4f-4683-b9ac-93e3644252e9" >
+			<when expression="#[payload.successful == false]">
+				<ee:transform doc:name="Transform Message" doc:id="7a92a3d5-4932-4fc7-938d-79d3cd2d7e71" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="failedRecords" ><![CDATA[%dw 2.0
+output application/java
+---
+sizeOf(payload.items filter ($.successful == false))]]></ee:set-variable>
+						<ee:set-variable variableName="errorMessage" ><![CDATA[%dw 2.0
+output application/json
+---
+payload.items filter ($.successful == false) map
+{
+  "statusCode": "500",
+  "transactionId":  correlationId default "",
+  "timeStamp": now(),
+  "message": $.message,    
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<logger level="INFO" doc:name="Failed record" doc:id="007f7274-514c-48d4-9b87-8a99698e1f9d" message='#["Failed Record:: " ++ vars.failedRecords]'/>
+			</when>
+		</choice>
+		<choice doc:name="Choice" doc:id="5d5283b0-4b9d-4640-b7ce-28faf4a4b414" >
+			<when expression="#[sizeOf(payload.items filter ($.successful == true)) &gt; 0]">
+				<ee:transform doc:name="Transform Message" doc:id="1a7ce06d-2ca9-4b48-a741-04109118dab8" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "statusCode": "201",
+  "message": "Fleet Count is successfully created in salesforce", 
+  "transactionId":  correlationId default "",
+  "timeStamp": now(),
+  "id": payload.items filter ($.successful == true) map ($.id)  
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="bd956a5c-99a1-46d3-91be-1328dff8a1ca" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.errorMessage]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Fleet Count Created in SF" doc:id="a4d8ebbe-9095-4c9f-bc1f-a090310de243" message="Fleet Count Created in SF"/>
+	</flow>
+</mule>

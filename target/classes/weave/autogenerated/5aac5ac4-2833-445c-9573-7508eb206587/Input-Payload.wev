@@ -1,0 +1,37 @@
+%dw 2.0
+
+type auto_5aac5ac4_2833_445c_9573_7508eb206587_Input_Payload = {
+  country_iso3_code?: String, 
+  pytd_wholesale?: String, 
+  ytd_fad?: String, 
+  fleet_external_id?: String, 
+  p_and_a_code?: String, 
+  stst_training_subscription?: String, 
+  x1pyos?: Number, 
+  dba_code?: String, 
+  publications_subscription?: String, 
+  x5_year_average?: Number, 
+  sca_id?: String, 
+  x5_year_total?: Number, 
+  account_name?: String, 
+  ytd_wholesale?: String, 
+  loyalty_sales_total?: String, 
+  x2pyos?: Number, 
+  loyalty_baseline?: String, 
+  x3pyos?: Number, 
+  ids_software_licenses_total?: Number, 
+  fin_code?: String, 
+  number_ihw_locations_new?: Number, 
+  pytd_retail?: String, 
+  ytd_retail?: String, 
+  pytd_fad?: String, 
+  ids_software_licenses_in_use?: Number, 
+  ihw_new?: String, 
+  limited_free_publications_subscription?: String, 
+  loyalty_program?: String, 
+  x0pyos?: Number, 
+  ytd_spend?: String, 
+  x4pyos?: Number, 
+  _?: Any
+}
+

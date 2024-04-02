@@ -1,0 +1,31 @@
+api:
+  id: "123456"  
+
+http:
+  host: "0.0.0.0"
+  private:
+    port: "8091"
+  readTimeout : "60000"
+  responseTimeout: "60000"
+
+https:
+  host: "0.0.0.0"
+  port: "8082"
+  
+tls:
+  type: "JKS"
+  path: "Ford-SSL-Keystore.jks"
+  alias: "*.esb.internal.ford.com"
+  keypassword: ford123
+  password: ford123 
+  
+cloudhub:
+  domain: "fordpro-template-api-uat"
+  userName: "CloudHubConnector_Ford"
+  envId: "679fa0d3-f7f0-424e-bac6-1b8c22e9be7e"
+  
+pro360:
+  host: "qa.apigtwy-internal.fordpro.com"
+  port: "443" 
+  path: "/fp-pro360-sys-api-uat-v2/api/mcEvents"
+  healthCheckPath: "/fp-pro360-sys-api-uat-v2/api/healthcheck"
